@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Eternal Sunshine | For Vampie 🌙</title>
+    <link href="https://fonts.googleapis.com/css2?family=La+Belle+Aurore&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --sunrise-gradient: linear-gradient(180deg, #2E86C1 0%, #FAD0C4 50%, #FF9E2C 100%);
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow-x: hidden; background: var(--sunrise-gradient);
+            transition: background 2s ease-in-out;
+        }
+
+        /* --- Ambient White Sparkles (Sky) --- */
+        .sparkle {
+            position: fixed; background: white; border-radius: 50%;
+            pointer-events: none; z-index: 150;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        /* --- Golden Background Sparkles (Desk) --- */
+        .gold-bg-sparkle {
+            position: absolute; background: radial-gradient(circle, #fff700 0%, #ffae00 100%);
+            border-radius: 50%; pointer-events: none; z-index: 5;
+            box-shadow: 0 0 8px #ffcc00;
+            animation: goldTwinkle 2s infinite ease-in-out;
+        }
+
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+        @keyframes goldTwinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.5); } }
+
+        #birthday-wish {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; text-align: center; font-family: 'Montserrat', sans-serif;
+            font-size: 2.2rem; color: white; text-shadow: 2px 4px 10px rgba(0,0,0,0.3);
+            z-index: 5; transition: opacity 1s ease;
+        }
+
+        /* --- The Desk Surface --- */
+        .desk-surface {
+            position: relative; min-height: 100vh; display: none;
+            flex-direction: column; align-items: center; opacity: 0;
+            transition: opacity 2s ease; background-color: #f4ecd8;
+            background-image: url('crumbled-paper.png'); background-size: cover;
+            background-position: center; padding: 20px; z-index: 200;
+        }
+
+        /* Container for sparkles that stay on the background */
+        #desk-sparkle-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; overflow: hidden;
+        }
+
+        .envelope-wrapper { position: relative; margin-top: 100px; cursor: pointer; z-index: 10; }
+        .envelope { 
+            width: 280px; height: 180px; background: #d4bc96; 
+            position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
+            border: 1px solid #c4ab85; display: flex; align-items: center; justify-content: center; 
+        }
+
+        .wax-seal { 
+            width: 70px; height: 70px; background: radial-gradient(circle, #8b0000 0%, #5a0000 100%); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            color: #d4af37; font-weight: bold; border: 2px solid #750000;
+        }
+
+        .letter-content {
+            display: none; width: 85%; max-width: 450px; background: #fff;
+            padding: 40px 25px; margin: 20px auto; box-shadow: 5px 5px 20px rgba(0,0,0,0.2);
+            font-family: 'La Belle Aurore', cursive; font-size: 1.3rem;
+            opacity: 0; transition: opacity 0.5s ease; position: relative; z-index: 30;
+        }
+
+        .close-btn {
+            display: block; margin: 20px auto 0; padding: 8px 15px;
+            background: #8b0000; color: white; border: none; border-radius: 5px;
+            font-family: 'Montserrat', sans-serif; font-size: 0.8rem; cursor: pointer;
+        }
+
+        .portals { display: flex; justify-content: center; gap: 25px; margin-top: 30px; opacity: 0; width: 100%; z-index: 40; }
+        .portal-item { width: 130px; text-align: center; cursor: pointer; }
+        .portal-btn { width: 100%; border-radius: 8px; box-shadow: 0 8px 15px rgba(0,0,0,0.3); }
+        .portal-label { font-size: 0.75rem; font-weight: bold; color: #4e342e; margin-top: 10px;}
+        
+        .balloon { position: absolute; bottom: -120px; width: 45px; height: 60px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; animation: floatUp 7s ease-in forwards; z-index: 100; }
+        @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-130vh); opacity: 0; } }
+    </style>
+</head>
+<body id="main-body">
+
+    <audio id="bg-music" src="mashup.mp3" loop></audio>
+
+    <div id="ambient-sparkles"></div>
+    <div id="birthday-wish">HAPPIEST BIRTHDAY BABE!😘</div>
+    <div id="sky-container"></div>
+
+    <div class="desk-surface" id="desk">
+        <div id="desk-sparkle-container"></div>
+
+        <div class="envelope-wrapper" id="envelope-trigger">
+            <div class="envelope">
+                <div class="wax-seal">💖</div>
+            </div>
+        </div>
+
+        <div class="letter-content" id="letter">
+            💌 To My mu-mu,<br><br>
+           
+Babe, listen up! Today should be officially a national holiday because my favorite person—the one and only Vampie—is celebrating another year of being a total ICON. Honestly, the way you walk through life with such effortless main-character energy is a literal masterclass. The world is just the background music to your story, and I am here for every single second of it! You’re not just leveling up; you’re outshining the sun today. Let’s GOOOO!<br><br>
+
+Can we just talk about the fact that we are still thriving after everything? Every time I think of our chaos, my mind immediately goes to the legendary moment Safi Sir spotted those pink pants as I was making a break for it from class. I swear, I can still hear us losing our minds laughing about it! No one else gets our broken humor, and honestly, I wouldn’t have it any other way. Whether we’re being total menaces or just sharing that one meme that sends us into orbit, life is just infinitely better with you by my side.<br><br>
+
+I know we’re both locked in for exams right now, but I have to laugh at how even in the middle of the stress, your F1 obsession is reaching legendary levels. Honestly, at this point, Oscar Piastri should be paying you for the PR! The way you’re obsessed with every single thing he does—the driving, the talking, even the way he walks—is so chaotic and I absolutely love it for you. You’ve got that same high-speed, winning energy. Whether you're dodging overthinking or just being a total menace in the best way possible, life is just infinitely better with you in my pit crew.<br><br>
+
+On a real note, baby, I don't think you realize how much I admire the way you move. I’m constantly in awe of your ability to just... let things go. You have this amazing sense of peace where you don't let the world's noise get inside your head, and I’m honestly trying to learn how to be more like you every day. And thank you. Thank you for being the person I can turn to when I just need to let it all out and cry. You’re my safe space, and your strength is something so incredibly beautiful. You’re perfect exactly as you are—don't let anyone tell you otherwise,not even yourself, because from where I’m standing, you’re the most flawless person I’ve ever met.<br><br>
+
+So, happy birthday to the girl who makes my head spin. Seriously honey, you need to chill out with how good you look today—those little vampire teeth are officially my favorite thing in the world, and that smile of yours is a total distraction. You’re looking so breathtaking it’s almost unfair to everyone else in the room. 😉<br><br>
+
+Take a look through the rest of this site; I built this whole digital world just for you because a masterpiece like you deserves to be celebrated.
+            <br><br>
+
+            Love you forever, my favorite vampie 🌙✨
+            <button class="close-btn" id="close-letter">Close Letter</button>
+        </div>
+
+        <div class="portals" id="portal-links">
+            <div class="portal-item" onclick="location.href='diary.html'">
+                <img src="oldbook.png" class="portal-btn"><div class="portal-label">THE MEMORIES DIARY</div>
+            </div>
+            <div class="portal-item" onclick="location.href='board.html'">
+                <img src="noticeboard.jpg" class="portal-btn"><div class="portal-label">TODAY'S MENU(& SURPRISES🤭)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sky = document.getElementById('sky-container');
+        const wish = document.getElementById('birthday-wish');
+        const desk = document.getElementById('desk');
+        const ambientBox = document.getElementById('ambient-sparkles');
+        const deskSparkleBox = document.getElementById('desk-sparkle-container');
+        const env = document.getElementById('envelope-trigger');
+        const lettr = document.getElementById('letter');
+
+        // 1. Create White Sparkles (Ambient Sky)
+        for(let i=0; i<40; i++) {
+            let s = document.createElement('div');
+            s.className = 'sparkle';
+            s.style.width = s.style.height = Math.random() * 3 + 'px';
+            s.style.top = Math.random() * 100 + 'vh'; s.style.left = Math.random() * 100 + 'vw';
+            s.style.setProperty('--duration', (1 + Math.random() * 2) + 's');
+            ambientBox.appendChild(s);
+        }
+
+        // 2. Create Golden Background Sparkles (Desk)
+        function generateGoldBgSparkles() {
+            deskSparkleBox.innerHTML = '';
+            for(let i=0; i<40; i++) {
+                let gs = document.createElement('div');
+                gs.className = 'gold-bg-sparkle';
+                gs.style.width = gs.style.height = (Math.random() * 5 + 2) + 'px';
+                gs.style.top = Math.random() * 100 + '%'; 
+                gs.style.left = Math.random() * 100 + '%';
+                gs.style.animationDelay = Math.random() * 2 + 's';
+                deskSparkleBox.appendChild(gs);
+            }
+        }
+        generateGoldBgSparkles();
+         // 3. Balloons
+        for(let i=0; i<40; i++) {
+            let b = document.createElement('div');
+            b.className = 'balloon';
+            b.style.left = Math.random() * 90 + 'vw';
+            b.style.backgroundColor = `hsl(${Math.random() * 360}, 75%, 75%)`;
+            b.style.animationDelay = (Math.random() * 1.5) + 's';
+            sky.appendChild(b);
+        }
+
+        // 4. Transition Logic
+        setTimeout(() => {
+            wish.style.opacity = "0";
+            desk.style.display = "flex";
+            setTimeout(() => { 
+                desk.style.opacity = "1"; 
+                sky.style.display = "none"; 
+                ambientBox.style.opacity = "0"; // Fade out white sky sparkles
+            }, 50);
+        }, 7000);
+
+        // 5. Open/Close Logic
+        env.addEventListener('click', function() {
+            document.getElementById('bg-music').play();
+            deskSparkleBox.style.opacity = "0"; // Hide golden bg sparkles when reading
+            this.style.display = 'none';
+            lettr.style.display = 'block';
+            setTimeout(() => { 
+                lettr.style.opacity = '1'; 
+                document.getElementById('portal-links').style.opacity = '1';
+                document.getElementById('portal-links').style.transition = 'opacity 1s';
+            }, 50);
+        });
+
+        document.getElementById('close-letter').addEventListener('click', function() {
+            lettr.style.opacity = '0';
+            setTimeout(() => {
+                lettr.style.display = 'none';
+                env.style.display = 'block';
+                deskSparkleBox.style.opacity = "1"; // Return the golden magic!
+            }, 500);
+        });
+    </script>
+</body>
+</html>

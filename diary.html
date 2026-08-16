@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Rusty Diary | Vampie 📔</title>
+    <link href="https://fonts.googleapis.com/css2?family=La+Belle+Aurore&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0; padding: 0;
+            background-color: #2c1a10;
+            background-image: linear-gradient(rgba(44, 26, 16, 0.85), rgba(44, 26, 16, 0.85)), url('crumbled-paper.png');
+            background-size: cover; background-attachment: fixed;
+            font-family: 'Montserrat', sans-serif; color: #d4bc96;
+            overflow-x: hidden;
+        }
+
+        /* --- Film Strip Styles --- */
+        .film-strip {
+            display: inline-block; /* Essential for Masonry */
+            width: 100%;
+            background: #111; 
+            padding: 25px 0;
+            margin-bottom: 30px;
+            border-top: 10px dashed #333; 
+            border-bottom: 10px dashed #333; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            position: relative;
+            transform: rotate(-1deg); /* Slight tilt for that messy diary feel */
+            break-inside: avoid;
+        }
+
+        /* The Sprocket Hole dots */
+        .film-strip::before, .film-strip::after {
+            content: "• • • • • • • • • • • • • •";
+            position: absolute;
+            width: 100%;
+            color: #444;
+            font-size: 18px;
+            letter-spacing: 12px;
+            text-align: center;
+            left: 0;
+        }
+        .film-strip::before { top: 2px; }
+        .film-strip::after { bottom: 2px; }
+
+        .film-strip video { width: 100%; display: block; border-top: 2px solid #000; border-bottom: 2px solid #000; }
+
+        /* --- Doodle & Tape Layer --- */
+        #bg-extras-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1; opacity: 0.5;
+        }
+        
+        .doodle { position: absolute; fill: none; stroke: #e5c100; stroke-width: 1.5; stroke-linecap: round; }
+        
+        .bg-washi {
+            position: absolute; width: 80px; height: 30px;
+            background: rgba(212, 188, 150, 0.15);
+            backdrop-filter: blur(1px);
+            border-left: 2px dashed rgba(255,255,255,0.2);
+            border-right: 2px dashed rgba(255,255,255,0.2);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        header { position: relative; z-index: 10; text-align: center; padding: 60px 20px 20px; }
+        h1 { font-family: 'La Belle Aurore', cursive; font-size: 3.5rem; color: #e5c100; margin: 0; }
+
+        /* --- Jigsaw Grid --- */
+        .diary-grid {
+            position: relative; z-index: 10;
+            columns: 2; column-gap: 20px;
+            padding: 20px; max-width: 1100px; margin: 0 auto;
+        }
+        @media (min-width: 768px) { .diary-grid { columns: 3; } }
+
+        .memory-item {
+            display: inline-block; width: 100%;
+            background: #3d2b1f; margin-bottom: 25px;
+            border: 4px solid #1a0f0a; box-shadow: 10px 10px 25px rgba(0,0,0,0.5);
+            position: relative; transition: transform 0.3s ease;
+        }
+
+        .memory-item::after {
+            content: ""; position: absolute; top: -10px; left: 50%;
+            transform: translateX(-50%) rotate(-3deg);
+            width: 80px; height: 25px;
+            background: rgba(229, 193, 0, 0.15);
+            backdrop-filter: blur(2px); z-index: 5;
+        }
+
+        .memory-item img { width: 100%; display: block; }
+        .caption { 
+            padding: 12px; font-family: 'La Belle Aurore', cursive; 
+            font-size: 1.2rem; text-align: center; background: #1a0f0a; color: #fdfcf0;
+        }
+
+        .back-nav {
+            position: fixed; top: 20px; left: 20px; z-index: 100;
+            background: #8b0000; color: white; padding: 10px 15px;
+            text-decoration: none; border-radius: 5px; font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-nav">← Back</a>
+
+    <div id="bg-extras-container">
+        <svg style="display: none;">
+            <symbol id="icon-bat" viewBox="0 0 100 60"><path d="M10 30 Q30 10 50 30 Q70 10 90 30 Q70 50 50 40 Q30 50 10 30 Z" /></symbol>
+            <symbol id="icon-star" viewBox="0 0 100 100"><path d="M50 10 L60 40 L90 50 L60 60 L50 90 L40 60 L10 50 L40 40 Z" /></symbol>
+            <symbol id="icon-heart" viewBox="0 0 100 100"><path d="M20 50 C20 30 50 30 50 50 C50 30 80 30 80 50 C80 80 50 90 50 90 C50 90 20 80 20 50" /></symbol>
+            <symbol id="icon-xoxo" viewBox="0 0 100 50"><text x="0" y="35" font-family="cursive" font-size="30" stroke="currentColor" fill="none">xoxo</text></symbol>
+            <symbol id="icon-spiral" viewBox="0 0 100 100"><path d="M50 50 C60 60 70 50 70 40 C70 30 60 20 50 20 C30 20 20 40 20 60 C20 80 40 90 60 90 C85 90 95 65 95 45" /></symbol>
+        </svg>
+    </div>
+
+    <header><h1>The Rusty Diary</h1></header>
+
+    <div class="diary-grid" id="main-grid">
+        
+        <div class="memory-item">
+            <img src="finalized photos and vedios\cute us.jpg">
+            <div class="caption">cute us</div>
+        </div>
+
+
+           <div class="memory-item">
+            <img src="finalized photos and vedios\cool photo.jpg">
+            <div class="caption">cool photo</div>
+        </div>
+
+
+        <div class="memory-item">
+            <img src="finalized photos and vedios\dramatic us.jpg">
+            <div class="caption">dramatic us</div>
+        </div>
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\dramatic you.jpg">
+            <div class="caption">dramatic you</div>
+        </div>
+
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\elegant us.jpg">
+            <div class="caption">elegant us</div>
+        </div>
+
+
+
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\long skirt on you.jpg">
+            <div class="caption">long skirt on you</div>
+        </div>
+
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\in the wedding.jpg">
+            <div class="caption">in the wedding</div>
+        </div>
+
+
+
+<div class="memory-item">
+            <img src="finalized photos and vedios\cute selfie.jpg">
+            <div class="caption">cute selfie</div>
+        </div>
+
+
+
+<div class="memory-item">
+            <img src="finalized photos and vedios\first mirror selfie.jpg">
+            <div class="caption">our first mirror selfie</div>
+        </div>
+
+
+
+<div class="memory-item">
+            <img src="finalized photos and vedios\us being kinda romantic....jpg">
+            <div class="caption">us being kinda romantic</div>
+        </div>
+
+<div class="memory-item">
+            <img src="finalized photos and vedios\cute sisters.jpg">
+            <div class="caption">cute sisters</div>
+        </div>
+
+
+<div class="memory-item">
+            <img src="finalized photos and vedios\apsara in garden.jpg">
+            <div class="caption">apsara in garden</div>
+        </div>
+
+
+
+
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\luffy.jpg">
+            <div class="caption">luffy</div>
+        </div>
+
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\matching shoes.jpg">
+            <div class="caption">matching shoes</div>
+        </div>
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\me admiring the class.jpg">
+            <div class="caption">me admiring the class</div>
+        </div>
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\creepy but cut.jpg">
+            <div class="caption">creepy but cute</div>
+        </div>
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\mirror selfie.jpg">
+            <div class="caption">mirror selfie</div>
+        </div>
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\my head on your.jpg">
+            <div class="caption">my head on your</div>
+        </div>
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\ruchi with ring necklace.jpg">
+            <div class="caption">ruchi with ring necklace</div>
+        </div>
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\simple you.jpg">
+            <div class="caption">simple you</div>
+        </div>
+
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\we hugging.jpg">
+            <div class="caption">we hugging</div>
+        </div>
+
+ <div class="memory-item">
+            <img src=>
+            <div class="caption">Wait for the chaos... 📸</div>
+        </div>
+
+
+<div class="memory-item">
+            <img src="finalized photos and vedios\with everyone.jpg">
+            <div class="caption">with everyone</div>
+        </div>
+
+<div class="memory-item">
+            <img src="finalized photos and vedios\you being shy.jpg">
+            <div class="caption">you being shy</div>
+        </div>
+
+<div class="memory-item">
+            <img src="finalized photos and vedios\you with movie.jpg">
+            <div class="caption">you with movie</div>
+        </div>
+
+ <div class="memory-item">
+            <img src="finalized photos and vedios\traditional you.jpg">
+            <div class="caption">traditional you</div>
+        </div>
+
+
+<div class="memory-item">
+            <img src="finalized photos and vedios\Within his presence😌.jpg">
+            <div class="caption">Within his presence😌</div>
+        </div>
+
+        <div class="film-strip">
+            <video loop muted playsinline autoplay>
+                <source src="finalized photos and vedios\we dancing.mp4" type="video/mp4">
+            </video>
+            <div class="caption">Within each other's arms 🎞️</div>
+        </div>
+
+        <div class="film-strip" style="transform: rotate(2deg);">
+            <video loop muted playsinline autoplay>
+                <source src="finalized photos and vedios\we enjoying after exam.mp4" type="video/mp4">
+            </video>
+            <div class="caption">Our favorite chaos 🎞️</div>
+        </div>
+
+    </div>
+
+    <script>
+        const container = document.getElementById('bg-extras-container');
+        const icons = ['#icon-bat', '#icon-star', '#icon-heart', '#icon-xoxo', '#icon-spiral'];
+        const colors = ['#e5c100', '#d4bc96', '#8b0000'];
+
+        function populateExtras() {
+            // Added 50 doodles for a more crowded, handmade feel
+            for (let i = 0; i < 50; i++) {
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+                const icon = icons[Math.floor(Math.random() * icons.length)];
+                svg.setAttribute("class", "doodle");
+                use.setAttributeNS("http://www.w3.org/1999/xlink", "href", icon);
+                const size = Math.random() * 40 + 30;
+                svg.style.width = size + "px";
+                svg.style.height = size + "px";
+                svg.style.top = Math.random() * 100 + "%";
+                svg.style.left = Math.random() * 100 + "%";
+                svg.style.transform = `rotate(${Math.random() * 360}deg)`;
+                svg.style.stroke = colors[Math.floor(Math.random() * colors.length)];
+                svg.appendChild(use);
+                container.appendChild(svg);
+            }
+
+            for (let i = 0; i < 20; i++) {
+                const tape = document.createElement('div');
+                tape.className = 'bg-washi';
+                tape.style.top = Math.random() * 100 + "%";
+                tape.style.left = Math.random() * 100 + "%";
+                tape.style.transform = `rotate(${Math.random() * 90 - 45}deg)`;
+                const tapeColors = ['rgba(212, 188, 150, 0.2)', 'rgba(139, 0, 0, 0.1)', 'rgba(229, 193, 0, 0.1)'];
+                tape.style.background = tapeColors[Math.floor(Math.random() * tapeColors.length)];
+                container.appendChild(tape);
+            }
+        }
+
+        populateExtras();
+
+        // Ensure videos play on mobile interaction
+        document.body.addEventListener('touchstart', () => {
+            document.querySelectorAll('video').forEach(v => v.play());
+        }, {once: true});
+    </script>
+</body>
+</html>
